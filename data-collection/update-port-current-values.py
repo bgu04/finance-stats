@@ -21,7 +21,10 @@ stock_port_coll = getDBCollection("stock_portfolios")
 
 def find_price(symbol, day_string):
     s = stock_fundamentals_coll.find_one({'$and': [{'symbol': symbol}, {'date': day_string}]})
-    return float(s['prevClose'])
+    if s == None:
+        return -1.0
+    else:
+        return float(s['prevClose'])
 
 
 for p in stock_port_coll.find({}):
@@ -29,7 +32,9 @@ for p in stock_port_coll.find({}):
     current_value = 0
     for s in p["portfolio"]:
         print (s['symbol'], s['share'])
-        current_value += find_price(s['symbol'], dateStr) * float(s['share'])
+        pre_price = find_price(s['symbol'], dateStr)
+        if pre_price > 0:
+            current_value += pre_price * float(s['share'])
     print (p['name'], current_value)
     print ('---------')
     return_rate = (current_value - float(p['origin_value'])) / float(p['origin_value'])

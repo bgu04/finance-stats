@@ -12,7 +12,7 @@ else:
 print('Input date string:', dateStr)
 
 def getDBCollection(collName):
-    mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
+    mongo_client = pymongo.MongoClient("mongodb://192.168.1.155:27017/")
     db = mongo_client["finance"]
     print('DB connected')
     return db[collName]
@@ -50,8 +50,8 @@ portfolio.extend(res_map[11])
 portfolio.extend(res_map[10])
 
 fund = {}
-fund['name'] = 'Basic Invest'
-fund['portId'] = 'BI-1'
+fund['name'] = 'Basic Invest Adjusted'
+fund['portId'] = 'BI-2'
 fund['date'] = dateStr
 fund['current_value'] = 1000000
 portfolio_picked = []
@@ -65,6 +65,6 @@ for tt in portfolio:
         portfolio_picked.append(picked)
 
 for s in portfolio_picked:
-    s['share'] = float(fund['current_value']) / len(portfolio_picked) / float(s['prevClose'])     
+    s['share'] = float(fund['origin_value']) / len(portfolio_picked) / float(s['prevClose'])     
 fund['portfolio'] = portfolio_picked 
 stock_port_coll.insert_one(fund)
